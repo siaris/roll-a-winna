@@ -71,7 +71,7 @@ const Roulette: React.FC = () => {
       <RouletteWheel rotation={rotation} itemCount={participants.length}>
         {participants.map((participant, index) => (
           <RouletteItem key={index} index={index} itemCount={participants.length}>
-            {participant}
+            <div>{participant}</div>
           </RouletteItem>
         ))}
         <CenterPin />
@@ -142,20 +142,28 @@ const RouletteItem = styled.div<RouletteItemProps>`
   width: 50%;
   height: 50%;
   transform-origin: 100% 100%;
-  transform: rotate(${props => (props.index * 360 / props.itemCount)}deg) 
-             skewY(${props => (90 - (360 / props.itemCount))}deg);
+  transform: 
+    rotate(${props => (props.index * 360 / props.itemCount)}deg)
+    skewY(${props => (90 - (360 / props.itemCount))}deg);
   background: ${props => `hsl(${props.index * (360 / props.itemCount)}, 70%, 70%)`};
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  text-align: center;
-  padding-bottom: 100px;
-  box-sizing: border-box;
-  color: #333;
-  font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
+
+  & > div {
+    transform: 
+      skewY(${props => (360 / props.itemCount - 90)}deg)
+      rotate(${props => (360 / props.itemCount / 2)}deg)
+      translate(40px, 0);
+    width: 80px;
+    text-align: center;
+    font-size: ${props => Math.max(10, 16 - props.itemCount * 0.5)}px;
+    font-weight: bold;
+    color: #333;
+    text-shadow: 0 0 3px white;
+    word-break: break-word;
+  }
 `;
 
 const CenterPin = styled.div`
