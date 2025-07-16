@@ -56,9 +56,10 @@ const Roulette: React.FC = () => {
       setIsSpinning(false);
       // Hitung pemenang berdasarkan rotasi akhir
       const segmentAngle = 360 / participants.length;
-      const normalizedRotation = rotation % 360;
+      const normalizedRotation = (rotation % 360)-10;
       const winningIndex = Math.floor(((360 - normalizedRotation) % 360) / segmentAngle);
       setWinner(participants[winningIndex]);
+      console.log(rotation);
     }, 5000); // Sesuaikan dengan durasi animasi CSS
     
     return () => clearTimeout(timer);
@@ -67,15 +68,17 @@ const Roulette: React.FC = () => {
   return (
     <Container>
       <h1>Door Prize Roulette</h1>
-      
-      <RouletteWheel rotation={rotation} itemCount={participants.length}>
-        {participants.map((participant, index) => (
-          <RouletteItem key={index} index={index} itemCount={participants.length}>
-            <div>{participant}</div>
-          </RouletteItem>
-        ))}
-        <CenterPin />
-      </RouletteWheel>
+      <WheelContainer>
+        <PointerIndicator />
+        <RouletteWheel rotation={rotation} itemCount={participants.length}>
+          {participants.map((participant, index) => (
+            <RouletteItem key={index} index={index} itemCount={participants.length}>
+              <div>{participant}</div>
+            </RouletteItem>
+          ))}
+          <CenterPin />
+        </RouletteWheel>
+      </WheelContainer>
       
       <SpinButton 
         onClick={handleSpin} 
@@ -130,7 +133,6 @@ const RouletteWheel = styled.div<RouletteWheelProps>`
   border-radius: 50%;
   background: #f5f5f5;
   border: 8px solid #333;
-  margin: 30px 0;
   overflow: hidden;
   transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
   transform: rotate(${props => props.rotation}deg);
@@ -176,18 +178,28 @@ const CenterPin = styled.div`
   border-radius: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  &::after {
-    content: '';
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 20px solid red;
-    transform: translateX(-50%);
-  }
+  
+`;
+
+const PointerIndicator = styled.div`
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 25px solid red;
+  z-index: 20;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+`;
+
+const WheelContainer = styled.div`
+  position: relative;
+  width: 420px; /* Lebih besar dari roulette untuk menampung pointer */
+  height: 420px;
+  margin: 30px 0;
 `;
 
 const SpinButton = styled.button`
